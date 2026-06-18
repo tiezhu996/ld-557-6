@@ -24,7 +24,7 @@ export class PortfoliosService {
   private nextId = 2;
 
   list(user: CurrentUser) {
-    return user.role === UserRole.ADMIN ? this.portfolios.filter((item) => item.userId === user.id) : this.portfolios;
+    return user.role === UserRole.ADMIN ? this.portfolios : this.portfolios.filter((item) => item.userId === user.id);
   }
 
   findOwned(id: number, user: CurrentUser) {

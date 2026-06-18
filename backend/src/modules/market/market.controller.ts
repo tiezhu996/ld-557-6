@@ -21,7 +21,7 @@ export class MarketController {
   }
 
   @Get('history/:symbol')
-  history(@Param('symbol') symbol: string, @Query('period') period = '1y') {
+  history(@Param('symbol') symbol: string, @Query('period') period = '1m') {
     return this.marketService.history(symbol, period);
   }
 

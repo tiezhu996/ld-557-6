@@ -33,7 +33,7 @@ export class TransactionsService {
   listByPortfolio(portfolioId: number, user: CurrentUser, page = 1, pageSize = 20) {
     const holdings = this.holdingsService.listByPortfolio(portfolioId, user);
     const holdingIds = new Set(holdings.map((item) => item.id));
-    return paginate(this.transactions.filter((item) => holdingIds.has(item.portfolioId)), page, pageSize);
+    return paginate(this.transactions.filter((item) => holdingIds.has(item.holdingId)), page, pageSize);
   }
 
   create(holdingId: number, dto: CreateTransactionDto, user: CurrentUser) {

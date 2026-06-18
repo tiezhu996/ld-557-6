@@ -71,7 +71,6 @@ export class HoldingsService {
       holding.quantity = newQuantity;
     }
     if (type === 'SELL') {
-      holding.avgCost = price;
       holding.quantity = Math.max(0, holding.quantity - quantity);
     }
     this.revalue(holding);

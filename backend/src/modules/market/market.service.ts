@@ -38,13 +38,49 @@ export class MarketService {
 
   history(symbol: string, period = '1m') {
     const quote = this.quote(symbol);
-    const points = Array.from({ length: period === '1m' ? 4 : 12 }, (_, index) => ({
-      date: `2026-${String(index + 1).padStart(2, '0')}-01`,
-      open: Number((quote.price * (0.92 + index * 0.01)).toFixed(2)),
-      close: Number((quote.price * (0.94 + index * 0.008)).toFixed(2)),
-      high: Number((quote.price * (0.96 + index * 0.008)).toFixed(2)),
-      low: Number((quote.price * (0.9 + index * 0.008)).toFixed(2)),
-    }));
+    const today = new Date();
+    let days: number;
+    let interval: number;
+
+    switch (period) {
+      case '1w':
+        days = 7;
+        interval = 1;
+        break;
+      case '1m':
+        days = 30;
+        interval = 1;
+        break;
+      case '3m':
+        days = 90;
+        interval = 3;
+        break;
+      case '6m':
+        days = 180;
+        interval = 7;
+        break;
+      case '1y':
+      default:
+        days = 365;
+        interval = 30;
+        break;
+    }
+
+    const pointCount = Math.floor(days / interval);
+    const points = Array.from({ length: pointCount }, (_, index) => {
+      const date = new Date(today);
+      date.setDate(date.getDate() - (pointCount - 1 - index) * interval);
+      const dateStr = date.toISOString().split('T')[0];
+      const progress = index / (pointCount - 1 || 1);
+      return {
+        date: dateStr,
+        open: Number((quote.price * (0.92 + progress * 0.08)).toFixed(2)),
+        close: Number((quote.price * (0.93 + progress * 0.07)).toFixed(2)),
+        high: Number((quote.price * (0.95 + progress * 0.07)).toFixed(2)),
+        low: Number((quote.price * (0.9 + progress * 0.06)).toFixed(2)),
+      };
+    });
+
     return { symbol: quote.symbol, period, cacheTtlSeconds: 300, points };
   }
 
